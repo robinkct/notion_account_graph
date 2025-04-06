@@ -13,7 +13,7 @@ os.environ['PYTHON_ENABLE_TKINTER'] = '0'
 os.environ['PYTHONUTF8'] = '1'
 
 # 設置中文字體
-plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
+plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'SimSun', 'Arial Unicode MS']
 plt.rcParams['axes.unicode_minus'] = False
 
 # 配置常量
@@ -503,7 +503,7 @@ class ChartManager:
 def main():
     """主函數"""
     chart_manager = ChartManager()
-    target_events = {"2025, 04月<<", "菲律賓馬尼拉-墨寶沙丁魚風暴【2025_0308-0316】", "埔里施家莊園2d【2025_0404-05】"}
+    target_events = {"2025, 04月<<"}#, "菲律賓馬尼拉-墨寶沙丁魚風暴【2025_0308-0316】", "埔里施家莊園2d【2025_0404-05】"}
     #target_events = {}
     chart_manager.draw_graph(target_events, source='affected')  # source='affected'使用受影響的數據源
 
