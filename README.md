@@ -1,61 +1,116 @@
-# Notion API 整合工具
+# Notion 賬戶圖表生成系統
 
-這個專案提供了一個簡單且強大的 Python 工具包，用於與 Notion API 進行互動。支持數據庫操作、頁面管理、屬性處理以及圖片上傳等功能。
+這是一個用於從 Notion 數據庫中提取數據並生成圖表的 Python 系統。系統可以自動從 Notion 賬戶數據庫中獲取支出記錄，生成圓餅圖，並將圖表更新到對應的 Notion 頁面中。
 
 ## 功能特點
 
-- 數據庫操作
-  - 創建新數據庫
-  - 添加/更新數據庫屬性
-  - 查詢數據庫內容
-  - 支持多種過濾條件
-  - 支持排序功能
+- **自動數據同步**：自動從 Notion 數據庫獲取最新的支出記錄
+- **智能圖表生成**：
+  - 支持生成總支出圓餅圖
+  - 支持生成個人支出圓餅圖（廷/雰）
+  - 自動處理圖表更新和版本控制
+- **圖片管理**：
+  - 自動上傳圖表到 Imgur
+  - 智能管理圖片記錄
+  - 避免重複上傳
+- **靈活的配置**：
+  - 支持多個數據庫配置
+  - 可配置的圖表生成選項
+  - 環境變量支持
 
-- 頁面管理
-  - 創建新頁面
-  - 更新頁面內容
-  - 添加關聯屬性
-  - 批量操作頁面
+## 系統要求
 
-- 圖片處理
-  - 支持外部圖片 URL
-  - 支持本地圖片上傳（通過 Imgur）
-  - 支持圖片說明文字
+- Python 3.6+
+- Notion API 訪問權限
+- Imgur API 訪問權限
 
-- 屬性處理
-  - 支持多種屬性類型（文本、數字、選擇、多選、日期等）
-  - 格式化屬性值輸出
-  - 關聯屬性支持
+## 安裝步驟
 
-## 安裝
-
-克隆專案：
+1. 克隆倉庫：
 ```bash
-!git clone https://github.com/robinkct/notionAPI_example.git
-cd notionAPI_example
+git clone git@github.com:robinkct/notion_account_graph.git
+cd notion_account_graph
 ```
 
-## 配置
-1. 獲取必要的認證：
-   - NotionAPI Token: 從 [Notion Developers](https://developers.notion.com/) 獲取：[可參考](https://dragonflykuo.com/%e4%b8%b2%e6%8e%a5-notion-api%e7%94%a8-python-%e8%87%aa%e7%94%b1%e6%93%8d%e4%bd%9c-notion/)
-   - (Option, 本地上傳圖片才需要) Imgur Client ID: 從 [Imgur API](https://api.imgur.com/oauth2/addclient) 獲取
-
-2. 到 notion/config.py 中新增：
-```config.py
-NOTION_TOKEN=your_notion_token
-IMGUR_CLIENT_ID=your_imgur_client_id
+2. 複製配置文件：
+```bash
+cp secrets.py.example secrets.py
 ```
 
-3. 打開 Notion 頁面，將第一步申請的 NotoinAPI 與頁面連接
-![示意圖](./image/notion_connection.jpg)
+3. 編輯 `secrets.py`，填入您的 Notion API 配置：
+```python
+NOTION_TOKEN = 'your_notion_token_here'
+NOTION_ACCOUNT_DB_ID = 'your_account_database_id'
+NOTION_EVENT_DB_ID = 'your_event_database_id'
+NOTION_MONTH_DB_ID = 'your_month_database_id'
+```
 
-4. 從 Notion 頁面取得頁面 ID，填入 main.py
-![示意圖](./image/page_id.jpg)
-```
-root_page_id = 'your page ID'
+## 使用方法
+
+### 基本使用
+
+運行主程序：
+```bash
+python money.py
 ```
 
-5. 運行 example: 結果可參考[Notion頁面](https://wiry-timpani-17d.notion.site/NotionAPI_example-1c6db9568fde8068bc49d3184604370f?pvs=74)
+### 重繪特定圖表
+
+要重繪特定事件的圖表，修改 `money.py` 中的 `titles_to_redraw` 列表：
+```python
+titles_to_redraw = ["2025, 01月", "2025, 02月"]  # 設置要重繪的標題
 ```
-python example.py
+
+## 目錄結構
+
 ```
+notion_account_graph/
+├── data/               # 數據存儲目錄
+│   └── image/         # 圖片存儲目錄
+│       ├── event/     # 事件圖表
+│       └── month/     # 月度圖表
+├── examples/          # 示例代碼
+├── notion/           # Notion API 相關代碼
+├── money.py          # 主程序
+├── draw_graph.py     # 圖表生成模塊
+├── secrets.py        # 配置文件（需要自行創建）
+└── secrets.py.example # 配置文件模板
+```
+
+## 主要功能模塊
+
+### 數據處理
+- 從 Notion 獲取支出記錄
+- 處理數據關聯
+- 生成圖表數據
+
+### 圖表生成
+- 生成總支出圓餅圖
+- 生成個人支出圓餅圖
+- 自動更新圖表
+
+### 圖片管理
+- 自動上傳到 Imgur
+- 管理圖片記錄
+- 版本控制
+
+## 注意事項
+
+1. 請確保 `secrets.py` 中的配置正確
+2. 不要將 `secrets.py` 提交到版本控制系統
+3. 定期備份數據目錄
+
+## 開發計劃
+
+- [ ] 添加更多圖表類型
+- [ ] 優化圖片上傳機制
+- [ ] 添加數據導出功能
+- [ ] 改進錯誤處理
+
+## 貢獻指南
+
+歡迎提交 Issue 和 Pull Request 來幫助改進這個項目。
+
+## 許可證
+
+MIT License
